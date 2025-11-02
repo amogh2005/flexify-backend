@@ -23,14 +23,29 @@ const socketService = new SocketService(server);
 // Make socket service available globally
 (global as any).socketService = socketService;
 
-app.use(cors({
-	origin: [
+app.use((req, res, next) => {
+	const allowedOrigins = [
 	  "http://localhost:5173",
-	  "https://flexify-frontend-llkv.vercel.app"
-	],
-	credentials: true
-  }));
-  app.use(express.json({ limit: "1mb" }));
+	  "https://flexify-frontend-llkv.vercel.app",
+	  "https://flexify-frontend-llkv-9f7i46cmv-amoghs-projects-2fd6ec23.vercel.app",
+	  "https://flexify-frontend-llkv-42y8efr3f-amoghs-projects-2fd6ec23.vercel.app"
+	];
+  
+	const origin = req.headers.origin;
+	if (origin && allowedOrigins.includes(origin)) {
+	  res.setHeader("Access-Control-Allow-Origin", origin);
+	}
+  
+	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+	res.header("Access-Control-Allow-Credentials", "true");
+  
+	if (req.method === "OPTIONS") {
+	  return res.sendStatus(200);
+	}
+	next();
+  });
+  
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
