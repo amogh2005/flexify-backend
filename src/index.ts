@@ -29,6 +29,12 @@ app.use(express.json({ limit: "1mb" }));
 // Serve uploaded files statically
 app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
+// Root route (for Render health check or browser visit)
+app.get("/", (_req, res) => {
+	res.send("✅ Flexify backend is live and connected to MongoDB!");
+});
+
+
 // Test endpoint to verify file serving
 app.get("/test-uploads", (_req, res) => {
 	const fs = require('fs');
