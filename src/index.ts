@@ -23,8 +23,14 @@ const socketService = new SocketService(server);
 // Make socket service available globally
 (global as any).socketService = socketService;
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:5173", credentials: true }));
-app.use(express.json({ limit: "1mb" }));
+app.use(cors({
+	origin: [
+	  "http://localhost:5173",
+	  "https://flexify-frontend.vercel.app"
+	],
+	credentials: true
+  }));
+  app.use(express.json({ limit: "1mb" }));
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
