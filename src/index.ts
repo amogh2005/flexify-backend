@@ -26,7 +26,7 @@ const socketService = new SocketService(server);
 app.use(cors({
 	origin: [
 	  "http://localhost:5173",
-	  "https://flexify-frontend.vercel.app"
+	  "https://flexify-frontend-llkv.vercel.app"
 	],
 	credentials: true
   }));
