@@ -347,8 +347,10 @@ router.get('/provider/earnings', verifyJwt, async (req: Request, res: Response) 
         formattedCommission: `₹${(payment.platformCommission / 100).toFixed(2)}`,
         status: payment.status,
         completedAt: payment.completedAt,
-        serviceType: payment.bookingId?.serviceType || 'Service',
-        clientName: payment.userId?.name || 'Client'
+        // @ts-ignore
+        serviceType: payment.bookingId?.serviceType || 'Service', 
+        // @ts-ignore
+        clientName: payment.userId?.name || 'Client' 
       }))
     });
 
