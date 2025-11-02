@@ -27,13 +27,11 @@ const server = createServer(app);
 
 // ✅ FIX 1: CORS middleware — must run BEFORE json/body parsing
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    "http://localhost:5173",
-    "https://flexify-frontend.vercel.app",
-    "https://flexify-frontend-llkv.vercel.app",
-    "https://flexify-frontend-llkv-9f7i46cmv-amoghs-projects-2fd6ec23.vercel.app",
-    "https://flexify-frontend-llkv-42y8efr3f-amoghs-projects-2fd6ec23.vercel.app",
-  ];
+	const allowedOrigins = [
+		"http://localhost:5173",
+		"https://flexify-frontend-llkv.vercel.app"
+	  ];
+	  
 
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
