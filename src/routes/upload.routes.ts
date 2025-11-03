@@ -1,69 +1,72 @@
 import { Router } from "express";
 import multer from "multer";
 import { verifyJwt, requireRole } from "../middleware/auth";
-import { uploadBufferToS3 } from "../services/storage";
 import { ProviderModel } from "../models/Provider";
+// @ts-ignore
+import cloudinary from "../config/cloudinary";
+
 
 const router = Router();
 const upload = multer();
 
-// Public document upload for registration (no auth required)
-router.post(
-	"/document",
-	upload.single("file"),
-	async (req, res) => {
-		if (!req.file) return res.status(400).json({ error: "Missing file" });
-		
-		// Validate file type
-		const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-		if (!allowedTypes.includes(req.file.mimetype)) {
-			return res.status(400).json({ error: "Invalid file type. Only JPG, PNG, and PDF files are allowed." });
-		}
-		
-		// Validate file size (5MB max)
-		const maxSize = 5 * 1024 * 1024; // 5MB
-		if (req.file.size > maxSize) {
-			return res.status(400).json({ error: "File size must be less than 5MB" });
-		}
-		
-		try {
-			const url = await uploadBufferToS3(req.file.buffer, req.file.mimetype);
-			return res.json({ 
-				url, 
-				message: "File uploaded successfully",
-				fileName: req.file.originalname,
-				fileSize: req.file.size,
-				fileType: req.file.mimetype
-			});
-		} catch (e: any) {
-			console.error("Upload error:", e);
-			return res.status(500).json({ error: e.message || "Upload failed" });
-		}
-	}
-);
+// Public upload route (no auth required)
+router.post("/document", upload.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Missing file" });
+  }
 
-// Provider: upload ID document (image/pdf) for verification
-router.post(
-	"/id",
-	verifyJwt,
-	requireRole("provider"),
-	upload.single("file"),
-	async (req, res) => {
-		if (!req.file) return res.status(400).json({ error: "Missing file" });
-		try {
-			const url = await uploadBufferToS3(req.file.buffer, req.file.mimetype);
-			const doc = await ProviderModel.findOneAndUpdate(
-				{ userId: req.user!.userId },
-				{ idDocumentUrl: url },
-				{ new: true }
-			);
-			return res.json({ url, provider: doc });
-		} catch (e: any) {
-			return res.status(500).json({ error: e.message || "Upload failed" });
-		}
-	}
-);
+  try {
+    const result = await new Promise<any>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "flexify_uploads", resource_type: "auto" },
+        (error, uploadResult) => {
+          if (error) return reject(error);
+          resolve(uploadResult);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
+
+    res.json({
+      url: result.secure_url,
+      public_id: result.public_id,
+      message: "File uploaded successfully",
+    });
+  } catch (err: any) {
+    console.error("Cloudinary upload error:", err);
+    res.status(500).json({ error: err.message || "Upload failed" });
+  }
+});
+
+// Authenticated provider upload (requires JWT)
+router.post("/id", verifyJwt, requireRole("provider"), upload.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "Missing file" });
+  }
+
+  try {
+    const result = await new Promise<any>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "id_documents", resource_type: "auto" },
+        (error, uploadResult) => {
+          if (error) return reject(error);
+          resolve(uploadResult);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
+
+    const updated = await ProviderModel.findOneAndUpdate(
+      { userId: req.user!.userId },
+      { idDocumentUrl: result.secure_url },
+      { new: true }
+    );
+
+    res.json({ url: result.secure_url, provider: updated });
+  } catch (err: any) {
+    console.error("Cloudinary upload error:", err);
+    res.status(500).json({ error: err.message || "Upload failed" });
+  }
+});
 
 export default router;
-
-
