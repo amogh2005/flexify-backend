@@ -18,7 +18,7 @@ router.post("/document", upload.single("file"), async (req, res) => {
   try {
     const result = await new Promise<any>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: "flexify_uploads", resource_type: "auto" },
+        { folder: "flexify_uploads", resource_type: "auto", access_mode: "public" },
         (error, uploadResult) => {
           if (error) return reject(error);
           resolve(uploadResult);
