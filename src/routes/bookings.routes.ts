@@ -120,7 +120,7 @@ router.post("/create", verifyJwt, requireRole("user"), async (req, res) => {
 
 		// Populate user and worker details for response
 		const populatedBooking = await booking.populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
       { path: 'providerId', select: 'category description' }
 		]);
 
@@ -229,8 +229,8 @@ router.post("/", verifyJwt, requireRole("user"), async (req, res) => {
 
 		// Populate user and provider details for response
 		const populatedBooking = await booking.populate([
-			{ path: 'userId', select: 'name email' },
-			{ path: 'providerId', select: 'name email' }
+			{ path: 'userId', select: 'name email phone' },
+			{ path: 'providerId', select: 'name email phone' }
 		]);
 
 		// Send notification to provider
@@ -329,7 +329,7 @@ router.patch("/:id/accept", verifyJwt, requireRole("provider"), async (req, res)
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -389,7 +389,7 @@ router.patch("/:id/reject", verifyJwt, requireRole("provider"), async (req, res)
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -436,7 +436,7 @@ router.patch("/:id/start", verifyJwt, requireRole("provider"), async (req, res) 
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -487,7 +487,7 @@ router.patch("/:id/complete", verifyJwt, requireRole("provider"), async (req, re
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -547,7 +547,7 @@ router.patch("/:id/review", verifyJwt, requireRole("user"), async (req, res) => 
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -584,7 +584,7 @@ router.patch("/:id/cancel", verifyJwt, requireRole("user"), async (req, res) => 
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -625,7 +625,7 @@ router.patch("/:id/payment-confirmed", verifyJwt, requireRole("user"), async (re
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
@@ -671,7 +671,7 @@ router.patch("/:id/payment-accepted", verifyJwt, requireRole("provider"), async 
 			},
 			{ new: true }
 		).populate([
-			{ path: 'userId', select: 'name email' },
+			{ path: 'userId', select: 'name email phone' },
 			{ path: 'providerId', select: 'category description' }
 		]);
 
