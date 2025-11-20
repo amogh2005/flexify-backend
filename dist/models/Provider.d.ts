@@ -1,7 +1,7 @@
 import mongoose, { Document, Types } from "mongoose";
 export interface ProviderDocument extends Document {
     userId: Types.ObjectId;
-    category: "driver" | "cook" | "plumber" | "electrician" | "cleaner" | "maid" | "gardener" | "other";
+    category: "driver" | "cook" | "plumber" | "electrician" | "cleaner" | "maid" ;
     description?: string;
     phone?: string;
     location: {

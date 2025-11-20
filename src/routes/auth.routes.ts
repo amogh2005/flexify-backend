@@ -45,7 +45,7 @@ function calculateTrustScore(providerData: any): number {
 // User Registration
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role, ...additionalData } = req.body;
+    const { name, email, password, role, phone, ...additionalData } = req.body;
 
     console.log('Registration request:', { name, email, role, additionalDataKeys: Object.keys(additionalData) });
 
@@ -64,6 +64,7 @@ router.post("/register", async (req, res) => {
     const user = new UserModel({
       name,
       email,
+      phone,                     
       passwordHash: hashedPassword,
       role,
     });

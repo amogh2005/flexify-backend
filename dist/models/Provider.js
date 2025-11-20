@@ -41,8 +41,8 @@ const ProviderSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         index: true,
-        enum: ["driver", "cook", "plumber", "electrician", "cleaner", "maid", "gardener", "other"],
-        message: "Category must be one of: driver, cook, plumber, electrician, cleaner, maid, gardener, other"
+        enum: ["driver", "cook", "plumber", "electrician", "cleaner", "maid"],
+        message: "Category must be one of: driver, cook, plumber, electrician, cleaner, maid"
     },
     description: { type: String },
     phone: { type: String },
