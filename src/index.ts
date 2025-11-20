@@ -118,6 +118,8 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
     console.log(`🔌 WebSocket server ready on ws://localhost:${PORT}`);
   });
 
+const { ProviderModel } = require("./models/Provider");
+
 // ⭐ AUTO-CANCEL JOB ⭐
 setInterval(async () => {
   try {
@@ -140,11 +142,14 @@ setInterval(async () => {
       await booking.save();
 
       // 🔔 Notify user + provider (REAL-TIME WEB NOTIFICATION)
-      await notifyBookingAutoCancelled(
-        booking.userId.toString(),
-        booking.providerId.toString(),
-        booking._id.toString()
-      );
+      const provider = await ProviderModel.findById(booking.providerId);
+
+    await notifyBookingAutoCancelled(
+      booking.userId.toString(),
+      provider?.userId.toString(),  // ✔ Correct user ID linked to socket
+      booking._id.toString()
+    );
+
     }
 
     console.log(`⏳ Auto-cancelled ${expiredBookings.length} pending bookings`);
@@ -152,7 +157,7 @@ setInterval(async () => {
   } catch (err) {
     console.error("❌ Auto-cancel job error:", err);
   }
-}, 60 * 1000); // every 1 minute
+}, 10 * 60 * 1000); // every 1 minute
 
 
 

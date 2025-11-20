@@ -117,8 +117,8 @@ const BookingSchema = new Schema<BookingDocument>(
 
     
 // ⭐ AUTO CANCEL FIELDS ⭐
-      expiresAt: { type: Date, index: true },
-      autoCancelledAt: { type: Date },
+    expiresAt: { type: Date, index: true },
+    autoCancelledAt: { type: Date },
 
     
     acceptedAt: { type: Date },

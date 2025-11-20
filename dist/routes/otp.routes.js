@@ -14,7 +14,7 @@ router.post("/request", auth_1.verifyJwt, (0, auth_1.requireRole)("provider"), a
         return res.status(400).json({ error: parsed.error.flatten() });
     const { phone } = parsed.data;
     const code = String(Math.floor(100000 + Math.random() * 900000));
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     await OtpToken_1.OtpTokenModel.create({ userId: req.user.userId, phone, code, expiresAt });
     await (0, notifications_1.sendSms)(phone, `Your verification code is ${code}`);
     return res.json({ ok: true });

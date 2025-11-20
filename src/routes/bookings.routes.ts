@@ -96,7 +96,7 @@ router.post("/create", verifyJwt, requireRole("user"), async (req, res) => {
 			status: "pending",
 
 			  // ⭐ ADD THIS ⭐
-			expiresAt: new Date(Date.now() + 1 * 60 * 1000), // 1 MIN AUTO CANCEL
+			expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 MIN AUTO CANCEL
 
 
 			// Commission and earnings (required fields)
@@ -218,7 +218,7 @@ router.post("/", verifyJwt, requireRole("user"), async (req, res) => {
 			currency,
 			status: "pending",
 
-			expiresAt: new Date(Date.now() + 1 * 60 * 1000),  // Auto-cancel in 1 minute
+			expiresAt: new Date(Date.now() + 10 * 60 * 1000),  // Auto-cancel in 1 minute
 
 			// Commission and earnings (required fields)
 			servicePrice: servicePriceInPaise,
