@@ -38,6 +38,9 @@ export interface BookingDocument extends Document {
   rejectionReason?: string;
   startedAt?: Date;
   completedAt?: Date;
+  expiresAt?: Date;
+  autoCancelledAt?: Date;
+
   
   // Provider response
   providerNotes?: string;
@@ -111,6 +114,13 @@ const BookingSchema = new Schema<BookingDocument>(
       default: "pending", 
       index: true 
     },
+
+    
+// ⭐ AUTO CANCEL FIELDS ⭐
+      expiresAt: { type: Date, index: true },
+      autoCancelledAt: { type: Date },
+
+    
     acceptedAt: { type: Date },
     rejectedAt: { type: Date },
     rejectionReason: { type: String },
@@ -174,6 +184,11 @@ BookingSchema.index({ status: 1, createdAt: -1 });
 BookingSchema.index({ providerId: 1, status: 1 });
 BookingSchema.index({ userId: 1, status: 1 });
 BookingSchema.index({ preferredDate: 1 });
+
+// ⭐ REQUIRED: TTL index for auto-cancel
+BookingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+
 
 export const BookingModel = mongoose.model<BookingDocument>("Booking", BookingSchema);
 

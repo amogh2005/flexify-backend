@@ -112,3 +112,30 @@ export async function notifyBookingStatusChange(userId: string, providerUserId: 
 }
 
 
+// ⭐ AUTO-CANCEL NOTIFICATION (NO EMAIL) ⭐
+export async function notifyBookingAutoCancelled(
+	userId: string,
+	providerUserId: string,
+	bookingId: string
+  ) {
+	const userMessage =
+	  "Your booking was automatically cancelled because the provider did not respond in time.";
+  
+	const providerMessage =
+	  "A booking assigned to you was auto-cancelled due to no response.";
+  
+	// 👉 Notify User (Real-Time on Web)
+	await sendRealTimeNotification(userId, "booking-auto-cancelled", {
+	  type: "auto-cancelled",
+	  message: userMessage,
+	  bookingId,
+	});
+  
+	// 👉 Notify Provider (Real-Time on Web)
+	await sendRealTimeNotification(providerUserId, "booking-auto-cancelled", {
+	  type: "auto-cancelled",
+	  message: providerMessage,
+	  bookingId,
+	});
+  }
+  

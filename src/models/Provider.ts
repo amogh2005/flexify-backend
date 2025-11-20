@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface ProviderDocument extends Document {
 	userId: Types.ObjectId;
-	category: "driver" | "cook" | "plumber" | "electrician" | "cleaner" | "maid" | "gardener" | "other";
+	category: "driver" | "cook" | "plumber" | "electrician" | "cleaner" | "maid" ;
 	description?: string;
 	phone?: string;
 	location: {
@@ -150,8 +150,8 @@ const ProviderSchema = new Schema<ProviderDocument>(
 			type: String, 
 			required: true, 
 			index: true,
-			enum: ["driver", "cook", "plumber", "electrician", "cleaner", "maid", "gardener", "other"],
-			message: "Category must be one of: driver, cook, plumber, electrician, cleaner, maid, gardener, other"
+			enum: ["driver", "cook", "plumber", "electrician", "cleaner", "maid"],
+			message: "Category must be one of: driver, cook, plumber, electrician, cleaner, maid"
 		},
 		description: { type: String },
 		phone: { type: String },

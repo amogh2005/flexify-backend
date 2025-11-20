@@ -15,6 +15,8 @@ import {
 } from "./routes";
 import { ensureAdminSeed } from "./utils/seedAdmin";
 import { SocketService } from "./services/socket";
+import { BookingModel } from "./models/Booking";
+
 
 dotenv.config();
 
@@ -115,6 +117,45 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
     console.log(`🚀 API listening on http://localhost:${PORT}`);
     console.log(`🔌 WebSocket server ready on ws://localhost:${PORT}`);
   });
+
+// ⭐ AUTO-CANCEL JOB ⭐
+setInterval(async () => {
+  try {
+    const now = new Date();
+
+    // 1️⃣ Fetch expired pending bookings
+    const expiredBookings = await BookingModel.find({
+      status: "pending",
+      expiresAt: { $lte: now }
+    });
+
+    if (expiredBookings.length === 0) return;
+
+    const { notifyBookingAutoCancelled } = require("./services/notifications");
+
+    // 2️⃣ Cancel each booking + send notification
+    for (const booking of expiredBookings) {
+      booking.status = "cancelled";
+      booking.autoCancelledAt = now;
+      await booking.save();
+
+      // 🔔 Notify user + provider (REAL-TIME WEB NOTIFICATION)
+      await notifyBookingAutoCancelled(
+        booking.userId.toString(),
+        booking.providerId.toString(),
+        booking._id.toString()
+      );
+    }
+
+    console.log(`⏳ Auto-cancelled ${expiredBookings.length} pending bookings`);
+
+  } catch (err) {
+    console.error("❌ Auto-cancel job error:", err);
+  }
+}, 60 * 1000); // every 1 minute
+
+
+
 })();
 
 export default app;

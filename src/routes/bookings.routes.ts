@@ -94,6 +94,11 @@ router.post("/create", verifyJwt, requireRole("user"), async (req, res) => {
 			amount: servicePriceInPaise,
 			currency: "inr",
 			status: "pending",
+
+			  // ⭐ ADD THIS ⭐
+			expiresAt: new Date(Date.now() + 1 * 60 * 1000), // 1 MIN AUTO CANCEL
+
+
 			// Commission and earnings (required fields)
 			servicePrice: servicePriceInPaise,
 			platformCommission: platformCommission,
@@ -110,6 +115,7 @@ router.post("/create", verifyJwt, requireRole("user"), async (req, res) => {
 			basePrice: basePrice * 100,
 			surgeMultiplier,
 			insuranceCost: insuranceCost * 100
+
 		});
 
 		// Populate user and worker details for response
@@ -211,6 +217,9 @@ router.post("/", verifyJwt, requireRole("user"), async (req, res) => {
 			amount: servicePriceInPaise,
 			currency,
 			status: "pending",
+
+			expiresAt: new Date(Date.now() + 1 * 60 * 1000),  // Auto-cancel in 1 minute
+
 			// Commission and earnings (required fields)
 			servicePrice: servicePriceInPaise,
 			platformCommission: platformCommission,
