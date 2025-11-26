@@ -45,7 +45,6 @@ const ProviderSchema = new mongoose_1.Schema({
         message: "Category must be one of: driver, cook, plumber, electrician, cleaner, maid"
     },
     description: { type: String },
-    phone: { type: String },
     location: {
         type: { type: String, enum: ["Point"], required: true, default: "Point" },
         coordinates: { type: [Number], required: true, index: "2dsphere" },

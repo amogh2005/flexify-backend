@@ -816,7 +816,7 @@ router.get("/admin/verification-queue", verifyJwt, async (req, res) => {
     }
 
     const providers = await ProviderModel.find({ verificationStatus: "pending" })
-      .populate("userId")
+      .populate("userId", "name email phone")
       .sort({ trustScore: -1, createdAt: 1 });
 
     res.json(providers);
