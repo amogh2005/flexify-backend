@@ -51,7 +51,7 @@ function calculateTrustScore(providerData) {
 // User Registration
 router.post("/register", async (req, res) => {
     try {
-        const { name, email, password, role, ...additionalData } = req.body;
+        const { name, email, password, role, phone, ...additionalData } = req.body;
         console.log('Registration request:', { name, email, role, additionalDataKeys: Object.keys(additionalData) });
         // Check if user already exists
         const existingUser = await User_1.UserModel.findOne({ email });

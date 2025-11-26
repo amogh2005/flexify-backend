@@ -685,7 +685,7 @@ router.get("/admin/verification-queue", auth_1.verifyJwt, async (req, res) => {
             return res.status(403).json({ message: "Admin access required" });
         }
         const providers = await Provider_1.ProviderModel.find({ verificationStatus: "pending" })
-            .populate('userId', 'name email')
+            .populate("userId")
             .sort({ trustScore: -1, createdAt: 1 });
         res.json(providers);
     }
